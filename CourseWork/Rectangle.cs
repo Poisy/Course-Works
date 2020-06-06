@@ -36,13 +36,6 @@ namespace POI
         // Get the Intersection Area of this and another Rectangle
         public static double GetIntersection(Rectangle rectangle1, Rectangle rectangle2)
         {
-            return GetIntersection(rectangle1, rectangle2, true);
-        }
-
-        // Get the Intersection Area of two Rectangles 
-        private static double GetIntersection(Rectangle rectangle1, Rectangle rectangle2, bool repeat)
-        {
-
             double r1x1 = rectangle1.point1.X;
             double r1y1 = rectangle1.point1.Y;
             double r1x2 = rectangle1.point2.X;
@@ -52,60 +45,37 @@ namespace POI
             double r2x2 = rectangle2.point2.X;
             double r2y2 = rectangle2.point2.Y;
 
-            double a = 0;
-            double b = 0;
-
-
-            if (r1x1 < r2x1 && r1x2 > r2x1)
-            {
-                if (r2x2 > r1x1) a = CalculateSide(r1x2, r2x1);
-                else a = CalculateSide(r1x1, r2x1);
-            }
-            else if (r1x1 < r2x2 && r1x2 > r2x2)
-            {
-                if (r2x1 > r1x2) a = CalculateSide(r2x2, r1x2);
-                else a = CalculateSide(r2x2, r1x1);
-            }
-            else if (r1x2 < r2x1 && r1x1 > r2x1)
-            {
-                if (r2x2 > r1x2) a = CalculateSide(r2x1, r1x1);
-                else a = CalculateSide(r1x2, r2x1);
-            }
-            else if (r1y2 < r2y2 && r1y1 > r2y2)
-            {
-                if (r2x1 > r1x2) a = CalculateSide(r2y2, r1y1);
-                else a = CalculateSide(r2y2, r2y1);
-            }
-
-
-            if (r1y1 < r2y1 && r1y2 > r2y1)
-            {
-                if (r2y2 > r1y1) b = CalculateSide(r1y2, r2y1);
-                else b = CalculateSide(r2y1, r1y1);
-            }
-            else if (r1y1 < r2y2 && r1y2 > r2y2)
-            {
-                if (r1y1 > r2y1) b = CalculateSide(r2y2, r1y2);
-                else b = CalculateSide(r2y2, r1y1);
-            }
-            else if (r1y2 < r2y1 && r1y1 > r2y1)
-            {
-                if (r1y1 > r2y2) b = CalculateSide(r2y1, r1y2);
-                else b = CalculateSide(r2y1, r1y1);
-            }
-            else if (r1y2 < r2y2 && r1y1 > r2y2)
-            {
-                if (r2y1 > r1y1) b = CalculateSide(r2y2, r1y1);
-                else b = CalculateSide(r2y2, r1y2);
-            }
-
-
-            if (repeat && (a == 0 || b == 0))
-            {
-                return GetIntersection(rectangle2, rectangle1, false);
-            }
+            double a = GetIntersectionSide(r1x1, r1x2, r2x1, r2x2);
+            double b = GetIntersectionSide(r1y1, r1y2, r2y1, r2y2);
 
             return a * b;
+        }
+
+        // Tries to get possible side between two rectangles given with 4 coordinates
+        private static double GetIntersectionSide(double coor1, double coor2, double coor3, double coor4)
+        {
+            if (coor1 < coor3 && coor2 > coor3)
+            {
+                if (coor4 > coor1) return CalculateSide(coor2, coor3);
+                else return CalculateSide(coor1, coor3);
+            }
+            else if (coor1 < coor4 && coor2 > coor4)
+            {
+                if (coor1 > coor3) return CalculateSide(coor4, coor1);
+                else return CalculateSide(coor4, coor2);
+            }
+            else if (coor2 < coor3 && coor1 > coor3)
+            {
+                if (coor4 > coor3) return CalculateSide(coor3, coor1);
+                else return CalculateSide(coor2, coor3);
+            }
+            else if (coor2 < coor4 && coor1 > coor4)
+            {
+                if (coor3 > coor2) return CalculateSide(coor4, coor1);
+                else return CalculateSide(coor4, coor2);
+            }
+
+            return 0;
         }
     }
 }
